@@ -5,13 +5,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flashcard App</title>
-  <script>
-    // Minimal working JS placeholder (actual full logic should be restored if saved)
-    document.addEventListener("DOMContentLoaded", function () {
-      document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px;'>Flashcard App Loaded</h1>";
-    });
-  </script>
+  <style>
+    body { font-family: sans-serif; background-color: #f9fafb; margin: 0; padding: 0; }
+    .card { max-width: 600px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .question { font-size: 20px; margin-bottom: 20px; }
+    .option { display: block; padding: 10px; margin: 10px 0; background: #e2e8f0; border: 2px solid #cbd5e0; border-radius: 5px; cursor: pointer; }
+    .option:hover { background: #cbd5e0; }
+    .green { background-color: #c6f6d5 !important; border-color: #38a169 !important; }
+    .red { background-color: #fed7d7 !important; border-color: #e53e3e !important; }
+    .bottom { margin-top: 20px; font-size: 14px; text-align: center; }
+    .nav { display: flex; justify-content: space-between; margin-top: 20px; }
+    .btn { padding: 8px 16px; background: #4299e1; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .btn:hover { background: #2b6cb0; }
+  </style>
 </head>
-<body style="font-family: sans-serif;">
+<body>
+  <div id="app" class="card"></div>
+  <script>
+    const flashcards = [
+      { question: "Which preposition completes this: 'I’ll see you ___ Monday.'", correct: "on", options: ["on", "in", "at", "by"] },
+      { question: "Which preposition fits: 'The book is ___ the table.'", correct: "on", options: ["on", "in", "under", "by"] },
+      { question: "She arrived ___ the morning.", correct: "in", options: ["in", "at", "on", "by"] },
+      { question: "He walked ___ the door.", correct: "through", options: ["through", "by", "under", "over"] },
+      { question: "We met ___ the airport.", correct: "at", options: ["at", "on", "in", "into"] }
+    ];
+
+    let current = 0;
+    let scoreCorrect = 0;
+    let scoreIncorrect = 0;
+    let incorrectAnswers = [];
+
+    function renderCard() {
+      const card = flashcards[current];
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="question">${card.question}</div>
+        ${card.options.map(opt => `<button class="option" onclick="checkAnswer(this, '${opt}', '${card.correct}')">${opt}</button>`).join("")}
+        <div class="bottom">Card ${current + 1} of ${flashcards.length} | ✅ ${scoreCorrect} ❌ ${scoreIncorrect}</div>
+      `;
+    }
+
+    function checkAnswer(button, selected, correct) {
+      const buttons = document.querySelectorAll(".option");
+      buttons.forEach(btn => btn.disabled = true);
+      if (selected.toLowerCase() === correct.toLowerCase()) {
+        button.classList.add("green");
+        scoreCorrect++;
+      } else {
+        button.classList.add("red");
+        scoreIncorrect++;
+        incorrectAnswers.push({ question: flashcards[current].question, selected, correct });
+      }
+      setTimeout(() => {
+        current++;
+        if (current < flashcards.length) {
+          renderCard();
+        } else {
+          showResults();
+        }
+      }, 800);
+    }
+
+    function showResults() {
+      const app = document.getElementById("app");
+      const percent = Math.round((scoreCorrect / flashcards.length) * 100);
+      const missed = incorrectAnswers.map(item => `
+        <li style="margin-bottom: 10px;">
+          <strong>Q:</strong> ${item.question}<br>
+          <span style="color:red;">Your answer:</span> ${item.selected}<br>
+          <span style="color:green;">Correct answer:</span> ${item.correct}
+        </li>
+      `).join("");
+      app.innerHTML = `
+        <h2 style="text-align:center;">✅ You finished the deck!</h2>
+        <p style="text-align:center;">Score: ${scoreCorrect}/${flashcards.length} (${percent}%)</p>
+        <h3>❌ Incorrect Answers:</h3>
+        <ul>${missed || "<li>No missed questions. Well done!</li>"}</ul>
+        <div style="text-align:center;"><button class="btn" onclick="location.reload()">Try Again</button></div>
+      `;
+    }
+
+    renderCard();
+  </script>
 </body>
 </html>
