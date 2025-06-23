@@ -21,71 +21,71 @@
 </head>
 <body>
   <div id="app" class="card"></div>
-  <script>
-    const flashcards = [
-      { question: "Which preposition completes this: 'I’ll see you ___ Monday.'", correct: "on", options: ["on", "in", "at", "by"] },
-      { question: "Which preposition fits: 'The book is ___ the table.'", correct: "on", options: ["on", "in", "under", "by"] },
-      { question: "She arrived ___ the morning.", correct: "in", options: ["in", "at", "on", "by"] },
-      { question: "He walked ___ the door.", correct: "through", options: ["through", "by", "under", "over"] },
-      { question: "We met ___ the airport.", correct: "at", options: ["at", "on", "in", "into"] }
-    ];
+ <script>
+  let flashcards = [];
+  let current = 0;
+  let scoreCorrect = 0;
+  let scoreIncorrect = 0;
+  let incorrectAnswers = [];
 
-    let current = 0;
-    let scoreCorrect = 0;
-    let scoreIncorrect = 0;
-    let incorrectAnswers = [];
+  // Load external JSON file
+  fetch("prepositions_time_beginner_100.json")
+    .then(res => res.json())
+    .then(data => {
+      flashcards = data;
+      renderCard();
+    })
+    .catch(err => {
+      console.error("Failed to load flashcards:", err);
+      document.getElementById("app").innerHTML = "<p>Failed to load flashcards.</p>";
+    });
 
-    function renderCard() {
-      const card = flashcards[current];
-      const app = document.getElementById("app");
-      app.innerHTML = `
-        <div class="question">${card.question}</div>
-        ${card.options.map(opt => `<button class="option" onclick="checkAnswer(this, '${opt}', '${card.correct}')">${opt}</button>`).join("")}
-        <div class="bottom">Card ${current + 1} of ${flashcards.length} | ✅ ${scoreCorrect} ❌ ${scoreIncorrect}</div>
-      `;
+  function renderCard() {
+    const card = flashcards[current];
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="question">${card.question}</div>
+      ${card.options.map(opt => `<button class="option" onclick="checkAnswer(this, '${opt}', '${card.correct}')">${opt}</button>`).join("")}
+      <div class="bottom">Card ${current + 1} of ${flashcards.length} | ✅ ${scoreCorrect} ❌ ${scoreIncorrect}</div>
+    `;
+  }
+
+  function checkAnswer(button, selected, correct) {
+    const buttons = document.querySelectorAll(".option");
+    buttons.forEach(btn => btn.disabled = true);
+    if (selected.toLowerCase() === correct.toLowerCase()) {
+      button.classList.add("green");
+      scoreCorrect++;
+    } else {
+      button.classList.add("red");
+      scoreIncorrect++;
+      incorrectAnswers.push({ question: flashcards[current].question, selected, correct });
     }
-
-    function checkAnswer(button, selected, correct) {
-      const buttons = document.querySelectorAll(".option");
-      buttons.forEach(btn => btn.disabled = true);
-      if (selected.toLowerCase() === correct.toLowerCase()) {
-        button.classList.add("green");
-        scoreCorrect++;
+    setTimeout(() => {
+      current++;
+      if (current < flashcards.length) {
+        renderCard();
       } else {
-        button.classList.add("red");
-        scoreIncorrect++;
-        incorrectAnswers.push({ question: flashcards[current].question, selected, correct });
+        showResults();
       }
-      setTimeout(() => {
-        current++;
-        if (current < flashcards.length) {
-          renderCard();
-        } else {
-          showResults();
-        }
-      }, 800);
-    }
+    }, 800);
+  }
 
-    function showResults() {
-      const app = document.getElementById("app");
-      const percent = Math.round((scoreCorrect / flashcards.length) * 100);
-      const missed = incorrectAnswers.map(item => `
-        <li style="margin-bottom: 10px;">
-          <strong>Q:</strong> ${item.question}<br>
-          <span style="color:red;">Your answer:</span> ${item.selected}<br>
-          <span style="color:green;">Correct answer:</span> ${item.correct}
-        </li>
-      `).join("");
-      app.innerHTML = `
-        <h2 style="text-align:center;">✅ You finished the deck!</h2>
-        <p style="text-align:center;">Score: ${scoreCorrect}/${flashcards.length} (${percent}%)</p>
-        <h3>❌ Incorrect Answers:</h3>
-        <ul>${missed || "<li>No missed questions. Well done!</li>"}</ul>
-        <div style="text-align:center;"><button class="btn" onclick="location.reload()">Try Again</button></div>
-      `;
-    }
+  function showResults() {
+    const percent = Math.round((scoreCorrect / flashcards.length) * 100);
+    const missed = incorrectAnswers.map(item => `
+      <li><strong>Q:</strong> ${item.question}<br>
+      ❌ Your answer: ${item.selected}<br>
+      ✅ Correct answer: ${item.correct}</li>`).join("");
+    document.getElementById("app").innerHTML = `
+      <h2>Deck Complete!</h2>
+      <p>Score: ${scoreCorrect}/${flashcards.length} (${percent}%)</p>
+      <h3>Incorrect Answers</h3>
+      <ul>${missed || "<li>No missed questions – great job!</li>"}</ul>
+      <button onclick="location.reload()">Restart</button>
+    `;
+  }
+</script>
 
-    renderCard();
-  </script>
 </body>
 </html>
