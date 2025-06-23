@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>English Flashcard App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .menu, .submenu {
+      margin: 1rem 0;
+    }
+    button {
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #app {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to the English Flashcard App</h1>
+  <div id="app">
+    <div class="menu" id="roleSelection">
+      <h2>Are you a learner or a tutor?</h2>
+      <button onclick="selectRole('learner')">Learner</button>
+      <button onclick="selectRole('tutor')">Tutor</button>
+    </div>
+  </div>
+
+  <script>
+    const app = document.getElementById('app');
+    let userData = {};
+
+    function selectRole(role) {
+      userData.role = role;
+      if (role === 'learner') {
+        app.innerHTML = `
+          <div class="submenu">
+            <h2>Select your English level</h2>
+            <button onclick="selectLevel('beginner')">Beginner</button>
+            <button onclick="selectLevel('intermediate')">Intermediate</button>
+            <button onclick="selectLevel('advanced')">Advanced</button>
+          </div>
+        `;
+      } else {
+        app.innerHTML = "<h2>Admin interface coming soon...</h2>";
+      }
+    }
+
+    function selectLevel(level) {
+      userData.level = level;
+      app.innerHTML = `
+        <div class="submenu">
+          <h2>Select a subject</h2>
+          <button onclick="selectSubject('Prepositions')">Prepositions</button>
+          <button disabled>Verbs</button>
+          <button disabled>Nouns</button>
+          <button disabled>Phrasal Verbs</button>
+          <button disabled>Verb Tense</button>
+        </div>
+      `;
+    }
+
+    function selectSubject(subject) {
+      userData.subject = subject;
+      app.innerHTML = `
+        <div class="submenu">
+          <h2>Select a preposition category</h2>
+          <button onclick="selectCategory('Time')">Time</button>
+          <button onclick="selectCategory('Place')">Place</button>
+          <button onclick="selectCategory('Direction/Movement')">Direction/Movement</button>
+          <button onclick="selectCategory('Manner')">Manner</button>
+          <button onclick="selectCategory('Agent/Instrument')">Agent/Instrument</button>
+          <button onclick="selectCategory('Source')">Source</button>
+          <button onclick="selectCategory('Measure')">Measure</button>
+          <button onclick="selectCategory('Random')">Random</button>
+          <button onclick="selectCategory('All')">All</button>
+        </div>
+      `;
+    }
+
+    function selectCategory(category) {
+      userData.category = category;
+      app.innerHTML = `
+        <div class="submenu">
+          <h2>Select a study mode</h2>
+          <button onclick="selectMode('Study - Multiple Choice')">Study - Multiple Choice</button>
+          <button disabled>Study - Fill in the Blank</button>
+          <button disabled>Timed - Multiple Choice</button>
+          <button disabled>Timed - Fill in the Blank</button>
+          <button disabled>Speed & Accuracy - Multiple Choice</button>
+          <button disabled>Speed & Accuracy - Fill in the Blank</button>
+          <button disabled>Race - Multiple Choice</button>
+          <button disabled>Race - Fill in the Blank</button>
+        </div>
+      `;
+    }
+
+    function selectMode(mode) {
+      userData.mode = mode;
+      window.location.href = "flashcard-prepositions-time.html";
+    }
+  </script>
+</body>
+</html>
