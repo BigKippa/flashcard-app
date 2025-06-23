@@ -7,22 +7,40 @@
   <title>English Flashcard App</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef3f9;
       padding: 2rem;
       text-align: center;
     }
     h1, h2 {
-      color: #333;
+      color: #2c3e50;
     }
     .menu, .submenu {
-      margin: 1rem 0;
+      margin: 1rem auto;
+      max-width: 600px;
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
     }
     button {
-      margin: 0.5rem;
-      padding: 0.75rem 1.5rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 1rem;
       font-size: 1rem;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    button:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
     }
     #app {
       margin-top: 2rem;
@@ -34,8 +52,10 @@
   <div id="app">
     <div class="menu" id="roleSelection">
       <h2>Are you a learner or a tutor?</h2>
-      <button onclick="selectRole('learner')">Learner</button>
-      <button onclick="selectRole('tutor')">Tutor</button>
+      <div class="button-grid">
+        <button onclick="selectRole('learner')">Learner</button>
+        <button onclick="selectRole('tutor')">Tutor</button>
+      </div>
     </div>
   </div>
 
@@ -49,9 +69,11 @@
         app.innerHTML = `
           <div class="submenu">
             <h2>Select your English level</h2>
-            <button onclick="selectLevel('beginner')">Beginner</button>
-            <button onclick="selectLevel('intermediate')">Intermediate</button>
-            <button onclick="selectLevel('advanced')">Advanced</button>
+            <div class="button-grid">
+              <button onclick="selectLevel('beginner')">Beginner</button>
+              <button onclick="selectLevel('intermediate')">Intermediate</button>
+              <button onclick="selectLevel('advanced')">Advanced</button>
+            </div>
           </div>
         `;
       } else {
@@ -64,11 +86,13 @@
       app.innerHTML = `
         <div class="submenu">
           <h2>Select a subject</h2>
-          <button onclick="selectSubject('Prepositions')">Prepositions</button>
-          <button disabled>Verbs</button>
-          <button disabled>Nouns</button>
-          <button disabled>Phrasal Verbs</button>
-          <button disabled>Verb Tense</button>
+          <div class="button-grid">
+            <button onclick="selectSubject('Prepositions')">Prepositions</button>
+            <button disabled>Verbs</button>
+            <button disabled>Nouns</button>
+            <button disabled>Phrasal Verbs</button>
+            <button disabled>Verb Tense</button>
+          </div>
         </div>
       `;
     }
@@ -78,15 +102,17 @@
       app.innerHTML = `
         <div class="submenu">
           <h2>Select a preposition category</h2>
-          <button onclick="selectCategory('Time')">Time</button>
-          <button onclick="selectCategory('Place')">Place</button>
-          <button onclick="selectCategory('Direction/Movement')">Direction/Movement</button>
-          <button onclick="selectCategory('Manner')">Manner</button>
-          <button onclick="selectCategory('Agent/Instrument')">Agent/Instrument</button>
-          <button onclick="selectCategory('Source')">Source</button>
-          <button onclick="selectCategory('Measure')">Measure</button>
-          <button onclick="selectCategory('Random')">Random</button>
-          <button onclick="selectCategory('All')">All</button>
+          <div class="button-grid">
+            <button onclick="selectCategory('Time')">Time</button>
+            <button onclick="selectCategory('Place')">Place</button>
+            <button onclick="selectCategory('Direction/Movement')">Direction/Movement</button>
+            <button onclick="selectCategory('Manner')">Manner</button>
+            <button onclick="selectCategory('Agent/Instrument')">Agent/Instrument</button>
+            <button onclick="selectCategory('Source')">Source</button>
+            <button onclick="selectCategory('Measure')">Measure</button>
+            <button onclick="selectCategory('Random')">Random</button>
+            <button onclick="selectCategory('All')">All</button>
+          </div>
         </div>
       `;
     }
@@ -96,20 +122,37 @@
       app.innerHTML = `
         <div class="submenu">
           <h2>Select a study mode</h2>
-          <button onclick="selectMode('Study - Multiple Choice')">Study - Multiple Choice</button>
-          <button disabled>Study - Fill in the Blank</button>
-          <button disabled>Timed - Multiple Choice</button>
-          <button disabled>Timed - Fill in the Blank</button>
-          <button disabled>Speed & Accuracy - Multiple Choice</button>
-          <button disabled>Speed & Accuracy - Fill in the Blank</button>
-          <button disabled>Race - Multiple Choice</button>
-          <button disabled>Race - Fill in the Blank</button>
+          <div class="button-grid">
+            <button onclick="selectMode('Study - Multiple Choice')">Study - Multiple Choice</button>
+            <button disabled>Study - Fill in the Blank</button>
+            <button disabled>Timed - Multiple Choice</button>
+            <button disabled>Timed - Fill in the Blank</button>
+            <button disabled>Speed & Accuracy - Multiple Choice</button>
+            <button disabled>Speed & Accuracy - Fill in the Blank</button>
+            <button disabled>Race - Multiple Choice</button>
+            <button disabled>Race - Fill in the Blank</button>
+          </div>
         </div>
       `;
     }
 
     function selectMode(mode) {
       userData.mode = mode;
+      app.innerHTML = `
+        <div class="submenu">
+          <h2>How many cards would you like to study?</h2>
+          <div class="button-grid">
+            <button onclick="startDeck(25)">25</button>
+            <button onclick="startDeck(50)">50</button>
+            <button onclick="startDeck(75)">75</button>
+            <button onclick="startDeck(100)">100</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function startDeck(cardCount) {
+      userData.cardCount = cardCount;
       window.location.href = "flashcard-prepositions-time.html";
     }
   </script>
