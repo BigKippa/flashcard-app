@@ -1,2 +1,2 @@
-# FlashcardApp
-Flashcard App Development for English tutoring
+# flashcard-app
+American English Flashcard App
